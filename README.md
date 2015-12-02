@@ -1,12 +1,12 @@
 # Background Compute
 
 Utilities to iterate through collections in the background in node. Use for cpu-intensive collection operations (
-for instance, serializing large collections) to avoid blocking the event loop. API is promise-based.
+for instance, serializing large collections) to avoid blocking the event loop.
 
 ### Operations
 Currently, contains the most basic collection operations:
  * each(collection, chunkSize(optional), iteratorFunction)
- * map(collection, chunkSize(optional), mapFunction) returns array of transformed values
+ * map(collection, chunkSize(optional), mapFunction) returns array of transformed values 
  * reduce(collection, chunkSize(optional), accumulatorFunction) returns accumulated value
 
  chunkSize optional parameter is how many times the array should be iterated before yielding to the event loop. The default value is 256. This means that the array will be iterated 256 times each tick of the event loop. For heavy operations, choose a lower value. For simpler operations, you can easily use a value in the thousands before you will see the event loop being delayed.
@@ -14,6 +14,43 @@ Currently, contains the most basic collection operations:
 ## Examples
 
 (The following examples assume the use of an array called collection)
+
+### Promise
+Typical, promise-based implementation.
+
+```javascript
+function someExpensiveOperation(accumulator, value, index) {}
+
+// also accessed from compute.parallel.promise.reduce
+compute.parallel.reduce(array, someExpensiveOperation, 0)
+  .then(function(result) {})
+  .catch(function(error) {});
+```
+
+### Callbacks
+
+```javascript
+function someExpensiveOperation(accumulator, value, index) {}
+
+// also accessed from compute.parallel.callback.reduce
+compute.parallel.reduce(array, someExpensiveOperation, 0, function(error, result) {
+  // do stuff with the result here
+});
+```
+
+### Events
+```javascript
+function someExpensiveOperation(accumulator, value, index) {}
+
+// also accessed from compute.parallel.event.reduce
+var computation = compute.parallel.event.reduce(array, someExpensiveOperation, 0);
+
+computation.on('done', function(result) { 
+  // do stuff with the result here
+});
+
+computation.on('error', function(error) {});
+```
 
 ### Parallel
 Useful for when you have multiple operations that can be completed at the same time.

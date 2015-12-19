@@ -1,6 +1,6 @@
 {
   "name": "background-compute",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "API for \"backgrounding\" heavy computation in node",
   "main": "index.js",
   "scripts": {

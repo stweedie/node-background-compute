@@ -14,13 +14,13 @@ var timerTock, timerTick = Date.now();
 
 function timerElapsed() {
   timerTock = Date.now();
-  console.log(['timer elapsed in', timerTock - timerTick, 'ms, expected', expectedIterationTime, 'ms'].join(' '));
+  // console.log(['timer elapsed in', timerTock - timerTick, 'ms, expected', expectedIterationTime, 'ms'].join(' '));
   timerTick = timerTock;
 }
 
 var interval = setInterval(timerElapsed, expectedIterationTime);
 
-var iteratorFunction = function(value, index, array) {
+var iteratorFunction = function(value, index) {
   // some expensive function
   var result = value * Math.random() * index + index - Math.atan2(0.5);
   return index;
@@ -67,7 +67,7 @@ function runEventTest() {
   var tock, tick = Date.now();
   console.log('asynchronous event operation starting');
   var event = parallel.event.reduce(array, 750, reduceFunction, 0);
-  event.on('success', function(asyncResult) {
+  event.on('done', function(asyncResult) {
     tock = Date.now();
     console.log(['asynchronous event operation ended in', tock - tick, 'with result of', asyncResult].join(' '));
     clearInterval(interval);
